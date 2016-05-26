@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
 
             </button>
-            <a class="navbar-brand" href="/WebPages/Index.aspx"><img src="/WebPages/images/logo.jpg" width="30" height="30"/></a>
+            <a class="navbar-brand" href="/Index.php"><img src="/WebPages/images/logo.jpg" width="30" height="30"/></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -21,7 +21,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><asp:Button ID="LoginBut" runat="server" OnClick="LogInMethod" class="loginBut"/> </li>
-                <li><a href="/WebPages/CreateUser.php">Opret bruger</a></li>
+                <li><a href="/CreateUser.php">Opret bruger</a></li>
                 <li><asp:Label ID="StatusLabel" runat="server" /></li>
             </ul>
         </div><!--/.nav-collapse -->
