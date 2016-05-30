@@ -1,6 +1,6 @@
 <?php
 
-foreach (glob("Model/*.php") as $filename) {
+foreach (glob("../Model/*.php") as $filename) {
     include_once $filename;
 }
 
