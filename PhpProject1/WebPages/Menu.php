@@ -7,7 +7,6 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-
             </button>
             <a class="navbar-brand" href="/Index.php"><img src="/WebPages/images/logo.jpg" width="30" height="30"/></a>
         </div>
@@ -17,12 +16,25 @@
                 <li><a href="/WebPages/About.php">Om klubben</a></li>
                 <li><a href="/WebPages/Calendar.php">Se kalender</a></li>
                 <li><a href="/WebPages/Contact.php">Kontakt os</a></li>
-                <li><a href="/WebPages/Admin/AdminPage.php">Admin</a></li>
+                <li><a href="/WebPages/Admin/Admin.php">Admin</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><asp:Button ID="LoginBut" runat="server" OnClick="LogInMethod" class="loginBut"/> </li>
                 <li><a href="/CreateUser.php">Opret bruger</a></li>
-                <li><asp:Label ID="StatusLabel" runat="server" /></li>
+                <?php
+                if(session_status()!= PHP_SESSION_ACTIVE)
+                {
+                    session_start();
+                }
+                    
+                    if(!isset($_SESSION['Username'])) 
+                    {
+                        echo "<i><a href=\"/WebPages/login.php\">Log ind</a></i>";
+                    }
+                    else
+                    {
+                        echo "<i><a href=\"/WebPages/helpers/Logout.php\">Log ud</a></i>";
+                    }
+                 ?>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

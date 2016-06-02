@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
@@ -36,6 +37,7 @@ and open the template in the editor.
     </head>
     <body>
         <?php
+            
         ?>
         <div><?php include ('/WebPages/Menu.php'); ?></div>
         <div>

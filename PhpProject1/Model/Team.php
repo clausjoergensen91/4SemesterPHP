@@ -4,7 +4,7 @@
  *
  * @author Nichlas
  */
-class Team {
+class Team{
     var $Id;
     var $Name;
     var $Type;

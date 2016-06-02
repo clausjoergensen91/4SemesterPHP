@@ -7,34 +7,41 @@ foreach (glob("../Model/*.php") as $filename) {
 /**
  * Description of SOAPConnect
  *
- * @author Nichlas
+ * @author Pretty much Nichlas adjusted to context by Peter
  */
-class SOAPConnect {
+class SOAPSecureConnect {
 
     const URL = "https://Asus:8182/WebHost/BSIService.svc?wsdl";
-    const LOCATION = "https://Asus:8182/WebHost/BSIService.svc/norm";
-    const SOAPPARAMS = array(
-        'trace' => 1,
-        'cache_wsdl' => 0,
-        'soap_version' => SOAP_1_1,
-        'classmap' => array('User' => 'User',
+    const LOCATION = "https://Asus:8182/WebHost/BSIService.svc/ssl";
+
+
+    var $client = null;
+    
+    
+    public function __construct($username, $password) {
+
+        try {
+            $this->client = new SoapClient(self::URL, 
+                    array(
+            'UserName' => $username,
+            'Password' => $password,
+            'trace' => 1,
+            'cache_wsdl' => 0,
+            'soap_version' => SOAP_1_1,
+            'classmap' => array('User' => 'User',
             'Player' => 'Player',
             'Team' => 'Team',
             'TrainingSession' => 'TrainingSession',
             'News' => 'News',
             'Match' => 'Match',
             'Events' => 'Events',
-            'ContentInfo' => 'ContentInfo')
-    );
-
-    var $client = null;
-
-    public function __construct() {
-        try {
-            $this->client = new SoapClient(self::URL, self::SOAPPARAMS);
+            'ContentInfo' => 'ContentInfo')));
             $this->client->__setLocation(self::LOCATION);
+
+
         } catch (Exception $e) {
-            //error_log($e->getMessage(), '/error/error.txt');
+            error_log($e->getMessage(), '/error/error.txt');
+            echo $e->getMessage();
         }
     }
 
@@ -42,7 +49,7 @@ class SOAPConnect {
         try {
             $params = array('name' => $name,
                 'retrieveAssoc' => $retrieveAssoc);
-            return $this->client->FindTeam($params)->FindTeamResult;
+            return $this->client->FindTeamSecure($params)->FindTeamResult;
         } catch (Exception $e) {
 //Do stuff...
         }
@@ -51,16 +58,16 @@ class SOAPConnect {
     public function findPlayer($email) {
         try {
             $params = array('email' => $email);
-            return $this->client->FindPlayer($params)->FindPlayerResult;
+            return $this->client->FindPlayerSecure($params)->FindPlayerResult;
         } catch (Exception $e) {
-//Do stuff...
+           echo $e->getMessage();
         }
     }
 
     public function deletePlayer($email) {
         try {
             $params = array('email' => $email);
-            return $this->client->DeletePlayer($params)->DeletePlayerResult;
+            return $this->client->DeletePlayerSecure($params)->DeletePlayerResult;
         } catch (Exception $e) {
 //Do stuff...
         }
@@ -99,7 +106,7 @@ class SOAPConnect {
                 'goals' => $goals,
                 'penalties' => $penalties
             );
-            return $this->client->CreatePlayer($params)->CreatePlayerResult;
+            return $this->client->CreatePlayerSecure($params)->CreatePlayerResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -115,7 +122,7 @@ class SOAPConnect {
                 'admPri' => $admPri,
                 'type' => $type
             );
-            return $this->client->CreateUser($params)->CreateUserResult;
+            return $this->client->CreateUserSecure($params)->CreateUserResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -131,7 +138,7 @@ class SOAPConnect {
                 'contentType' => $contentType,
                 'picture' => $picture
             );
-            return $this->client->CreateNews($params)->CreateNewsResult;
+            return $this->client->CreateNewsSecure($params)->CreateNewsResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -152,7 +159,7 @@ class SOAPConnect {
                 'awaygoals' => $awaygoals,
                 'team' => $team
             );
-            return $this->client->CreateMatch($params)->CreateMatchResult;
+            return $this->client->CreateMatchSecure($params)->CreateMatchResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -161,7 +168,7 @@ class SOAPConnect {
     public function deleteUser($email) {
         try {
             $params = array('email' => $email);
-            return $this->client->DeleteUser($params)->DeleteUserResult;
+            return $this->client->DeleteUserSecure($params)->DeleteUserResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -170,7 +177,7 @@ class SOAPConnect {
     public function findUser($email) {
         try {
             $params = array('email' => $email);
-            return $this->client->FindUser($params)->FindUserResult;
+            return $this->client->FindUserSecure($params)->FindUserResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -179,7 +186,7 @@ class SOAPConnect {
     public function findMatches($date) {
         try {
             $params = array('date' => $date);
-            return $this->client->FindMatches($params)->FindMatchesResult;
+            return $this->client->FindMatchesSecure($params)->FindMatchesResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -188,7 +195,7 @@ class SOAPConnect {
     public function findTrainingSessions($date) {
         try {
             $params = array('date' => $date);
-            return $this->client->FindTrainingSessions($params)->FindTrainingSessionsResult;
+            return $this->client->FindTrainingSessionsSecure($params)->FindTrainingSessionsResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -197,7 +204,7 @@ class SOAPConnect {
     public function findNews($date) {
         try {
             $params = array('date' => $date);
-            return $this->client->FindNews($params)->FindNewsResult;
+            return $this->client->FindNewsSecure($params)->FindNewsResult;
         } catch (Exception $e) {
             //Do stuff...
         }
@@ -215,7 +222,7 @@ class SOAPConnect {
                 'admPri' => $admPri,
                 'type' => $type
             );
-            return $this->client->UpdateUser($params)->UpdateUserResult;
+            return $this->client->UpdateUserSecure($params)->UpdateUserResult;
         } catch (Exception $e) {
             //Do stuff...
         }        
@@ -226,7 +233,7 @@ class SOAPConnect {
             $params = array('id' => $id,
                 'retrieveAssoc' => $retieveAssoc
             );
-            return $this->client->FindTeamWithId($params)->FindTeamWithIdResult;
+            return $this->client->FindTeamWithIdSecure($params)->FindTeamWithIdResult;
         } catch (Exception $e) {
             //Do stuff...
         }
