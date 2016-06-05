@@ -11,8 +11,8 @@ foreach (glob("../Model/*.php") as $filename) {
  */
 class SOAPConnect {
 
-    const URL = "https://Asus:8182/WebHost/BSIService.svc?wsdl";
-    const LOCATION = "https://Asus:8182/WebHost/BSIService.svc/norm";
+    const URL = "http://localhost:8033/Design_Time_Addresses/Service/BSIService/?wsdl";
+    const LOCATION = "http://localhost:8039/Design_Time_Addresses/Service/BSIService/";
     const SOAPPARAMS = array(
         'trace' => 1,
         'cache_wsdl' => 0,

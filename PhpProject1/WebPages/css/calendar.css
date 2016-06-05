@@ -24,11 +24,12 @@ and open the template in the editor.
     border: 2px solid black;
     color: #FF0000;
     text-align: center;
-    onmouseover: 
+    background-color: pink;
 }
 .calendar td{
-    htmlContent: 2px;
+    align-content: center;
     width: 40px;
+    float: right;
 }
 .monthNow th{
     background-color: #000000;

@@ -11,16 +11,30 @@ and open the template in the editor.
     </head>
     <body>
         <div class="jumbotron">
-            <div class="container homepage">
+            <div class="row">
                 <h1>This is contact stuff</h1>
                 <p class="lead blog-description text-center">contact contact contact contact contact contact contact </p>
-                 dsafsafsafa
-                <?php
-                    echo "Session:" . $_SESSION['Username'];
-                    echo "role:" . $_COOKIE['Roles'];
-                ?>
-    </body>
             </div>
         </div>
-
+        <div class="container">
+            <div class="col-md-4">
+                <form action="/WebPages/Helpers/createUser.php" method="post">
+                    Fornavn:<br>
+                    <input type="text" name="firstName"><br>
+                    Efternavn:<br>
+                    <input type="text" name="lastName"><br>
+                    Email:<br>
+                    <input type="text" name="email"><br>
+                    Brugernavn:<br>
+                    <input type="text" name="userName"><br>
+                    Kodeord:<br>
+                    <input type="text" name="password"><br>
+                    Administrator rettigheder:<br>
+                    <input type="text" name="adminPrivilege"><br>
+                    <br>
+                    <button type="submit">Opret bruger</button>
+                </form>
+            </div>
+        </div>
+    </body>
 </html>
