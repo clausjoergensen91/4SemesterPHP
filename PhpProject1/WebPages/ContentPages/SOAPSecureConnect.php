@@ -3,6 +3,7 @@
 foreach (glob("../Model/*.php") as $filename) {
     include_once $filename;
 }
+include "../Helpers/CustomSoapClient.php";
 
 /**
  * Description of SOAPConnect
@@ -12,38 +13,45 @@ foreach (glob("../Model/*.php") as $filename) {
 class SOAPSecureConnect {
 
     const URL = "https://Asus:8182/WebHost/BSIService.svc?wsdl";
-    const LOCATION = "https://Asus:8182/WebHost/BSIService.svc/ssl";
-
-
-    var $client = null;
-    
-    
-    public function __construct($username, $password) {
-
-        try {
-            $this->client = new SoapClient(self::URL, 
-                    array(
-            'UserName' => $username,
-            'Password' => $password,
-            'trace' => 1,
-            'cache_wsdl' => 0,
-            'soap_version' => SOAP_1_1,
-            'classmap' => array('User' => 'User',
+    const LOCATION = "https://Asus:8182/WebHost/BSIService.svc/sec";
+    const SOAPPARAMS = array(
+        'trace' => 1,
+        'cache_wsdl' => 0,
+        'soap_version' => SOAP_1_1,
+        'classmap' => array('User' => 'User',
             'Player' => 'Player',
             'Team' => 'Team',
             'TrainingSession' => 'TrainingSession',
             'News' => 'News',
             'Match' => 'Match',
             'Events' => 'Events',
-            'ContentInfo' => 'ContentInfo')));
+            'ContentInfo' => 'ContentInfo')
+    );
+
+    var $client = null;
+
+    public function __construct($username, $password) {
+        try {
+            $this->client = new SoapClient(self::URL, self::SOAPPARAMS);
             $this->client->__setLocation(self::LOCATION);
-
-
+            self::createUserNameToken($this->client, $username, $password);
         } catch (Exception $e) {
-            error_log($e->getMessage(), '/error/error.txt');
-            echo $e->getMessage();
+            //error_log($e->getMessage(), '/error/error.txt');
+        }
+
+        try {
+//            $this->client->GetVersion();
+
+            echo str_replace('>', '>', str_replace('<', '<', str_replace('&', '&', $this->client->__getLastResponse())));
+        } catch (Exception $e) {
+            echo $e;
         }
     }
+
+//    public function setCredentials($username, $password)
+//    {
+//        $this->client->__setUsernameToken($username, $password);
+//    }
 
     public function findTeamName($name, $retrieveAssoc) {
         try {
@@ -58,9 +66,10 @@ class SOAPSecureConnect {
     public function findPlayer($email) {
         try {
             $params = array('email' => $email);
+//            return $this->client->__soapCall('FindPlayerSecure', $params)->FindPlayerResult;
             return $this->client->FindPlayerSecure($params)->FindPlayerResult;
         } catch (Exception $e) {
-           echo $e->getMessage();
+            echo $e->getMessage();
         }
     }
 
@@ -209,7 +218,7 @@ class SOAPSecureConnect {
             //Do stuff...
         }
     }
-    
+
     public function updateUser($oldFn, $oldLn, $username, $password, $firstname, $lastname, $email, $admPri, $type) {
         try {
             $params = array('oldFn' => $oldFn,
@@ -225,11 +234,11 @@ class SOAPSecureConnect {
             return $this->client->UpdateUserSecure($params)->UpdateUserResult;
         } catch (Exception $e) {
             //Do stuff...
-        }        
+        }
     }
-    
+
     public function findTeamWithId($id, $retieveAssoc) {
-                try {
+        try {
             $params = array('id' => $id,
                 'retrieveAssoc' => $retieveAssoc
             );
@@ -238,4 +247,21 @@ class SOAPSecureConnect {
             //Do stuff...
         }
     }
+
+    public function createUserNameToken($client, $username, $password) {
+        $wssNamespace = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+
+        $usernameString = new SoapVar($username, XSD_STRING, null, null, 'Username', $wssNamespace);
+
+        $passwordString = new SoapVar($password, XSD_STRING, null, null, 'Password', $wssNamespace);
+
+        $firstToken = new SoapVar(array($usernameString, $passwordString), SOAP_ENC_OBJECT, null, null, 'UsernameToken', $wssNamespace);
+
+        $secondToken = new SoapVar(array($firstToken), SOAP_ENC_OBJECT, null, null, null, $wssNamespace);
+
+        $wssUsernameTokenHeader = new SoapHeader($wssNamespace, 'Security', $secondToken);
+
+        $client->__setSoapHeaders($wssUsernameTokenHeader);
+    }
+
 }
